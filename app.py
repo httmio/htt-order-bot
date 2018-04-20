@@ -74,7 +74,7 @@ def handle_message(event):
             isCreateOrder = True
             line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=shop[0]+shop[1]))
+            TextSendMessage(text=img))
                 #line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
 
     elif event.message.text == '指令':
