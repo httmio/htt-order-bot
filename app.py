@@ -68,12 +68,13 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text='雷姆是一位有著水藍色頭髮、水藍色瞳孔的少女，有著與雙胞胎姊姊拉姆相似的外型，右眼以瀏海掩蓋，只露出左眼，與姐姐拉姆相反；胸部則比拉姆大一點'))
     elif event.message.text.find('開團') != -1:
-        shop = event.message.text.split()
         if shop[0]=='開團' :
+            shop = event.message.text.split()
             img = shopMeum(shop[1])
             isCreateOrder = True
             if img != '' :
-                line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
+                TextSendMessage(text=img))
+                #line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
 
     elif event.message.text == '指令':
         line_bot_api.reply_message(
