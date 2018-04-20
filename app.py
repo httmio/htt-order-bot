@@ -72,10 +72,9 @@ def handle_message(event):
             shop = event.message.text.split()
             img = shopMeum(shop[1])
             isCreateOrder = True
-            if img != '' :
-                line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=img))
+            line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=img))
                 #line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
 
     elif event.message.text == '指令':
