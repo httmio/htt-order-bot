@@ -17,11 +17,11 @@ from linebot.models import *
 
 def shopMeum(shop):
     if shop == '50嵐' or '五十嵐':
-        return '五十嵐'
+        return '1'
     elif shop == '水巷茶弄' :
-        return '水巷茶弄'
+        return '2'
     else:
-        return ''
+        return shop
 
 app = Flask(__name__)
 isCreateOrder = False
