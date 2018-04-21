@@ -16,10 +16,10 @@ from linebot.models import *
 
 
 def shopMeum(shop):
-    if shop == '50嵐' or '五十嵐':
-        return '1'
-    elif shop == '水巷茶弄' :
-        return '2'
+    if shop == '50嵐' and '五十嵐':
+        return 'https://i.imgur.com/vmFauOD.png'
+    elif shop == '水巷茶弄':
+        return 'https://i.imgur.com/6sNomMJ.png'
     else:
         return shop
 
@@ -72,10 +72,7 @@ def handle_message(event):
         if shop[0] == '開團' :
             img = shopMeum(shop[1])
             isCreateOrder = True
-            line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=img))
-                #line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
+            line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
 
     elif event.message.text == '指令':
         line_bot_api.reply_message(
