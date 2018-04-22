@@ -20,6 +20,8 @@ def shopMeum(shop):
         return 'https://i.imgur.com/vmFauOD.png'
     elif shop == '水巷茶弄':
         return 'https://i.imgur.com/6sNomMJ.png'
+    elif shop == '茶湯會':
+        return 'https://i.imgur.com/AKahSbx.jpg'
     else:
         return shop
 
@@ -73,23 +75,21 @@ def handle_message(event):
             img = shopMeum(shop[1])
             isCreateOrder = True
             line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
+    elif event.message.text.find('訂') != -1:
+         order = event.message.text.split()
+         
+         #飲料名稱 order[0]
+         
+         #甜度order[1]
+         
+         #冰量order[2]
+         
+         #姓名order[3]
 
     elif event.message.text == '指令':
         line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text="目前可以執行指令\n抽籤、吃什麼、抽早安圖、雷姆"))
-    elif event.message.text.find('賣賣') != -1:
-        line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text="賣賣超級無敵大正咩!!"))
-    elif event.message.text.find('小雅') != -1:
-        line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text="小雅超級無敵大正咩!!"))
-    elif event.message.text.find('哈哈') != -1:
-        line_bot_api.reply_message(
-        event.reply_token,
-            ImageSendMessage(original_content_url='https://i.imgur.com/fA8zpf7.jpg',preview_image_url='https://i.imgur.com/fA8zpf7.jpg'))
     else:
         pass
 if __name__ == "__main__":
