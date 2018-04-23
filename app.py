@@ -79,7 +79,7 @@ def handle_message(event):
 
         order = event.message.text.split(" ",1)
         #利用dict KEY值為id 
-        order_list[event.source.user_id] = order[1]
+        order_list[profile.display_name] = order[1]
         line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=order_list))
