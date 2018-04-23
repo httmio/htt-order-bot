@@ -94,6 +94,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="尚未開團"))
     elif event.message.text == '結單' :
         isCreateOrder == False
+        order_list.clear()
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='結單'))
 
     elif event.message.text == '指令':
