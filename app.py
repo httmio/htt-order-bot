@@ -75,9 +75,14 @@ def handle_message(event):
             img = shopMeum(shop[1])
             isCreateOrder = True
             line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
-    elif event.message.text.find('訂') != -1:
-         order = event.message.text.split()
-         
+   elif event.message.text.find('訂') != -1:
+
+        order = event.message.text.split(" ",1)
+        #利用dict KEY值為id 
+        order_list[event.source.user_id] = order[2]
+        line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=order_list))
          #飲料名稱 order[0]
          
          #甜度order[1]
@@ -85,7 +90,6 @@ def handle_message(event):
          #冰量order[2]
          
          #姓名order[3]
-
     elif event.message.text == '指令':
         line_bot_api.reply_message(
         event.reply_token,
