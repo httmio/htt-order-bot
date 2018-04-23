@@ -70,26 +70,32 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text='雷姆是一位有著水藍色頭髮、水藍色瞳孔的少女，有著與雙胞胎姊姊拉姆相似的外型，右眼以瀏海掩蓋，只露出左眼，與姐姐拉姆相反；胸部則比拉姆大一點'))
     elif event.message.text.find('開團') != -1:
-        shop = event.message.text.split()
-        if shop[0] == '開團' :
-            img = shopMeum(shop[1])
-            isCreateOrder = True
-            line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
+        if isCreateOrder:
+            shop = event.message.text.split()
+            if shop[0] == '開團' :
+                img = shopMeum(shop[1])
+                isCreateOrder = True
+                line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
+        else:line_bot_api.reply_message(event.reply_token,TextSendMessage(text='已開團'))
     elif event.message.text.find('訂') != -1:
+        if isCreateOrder:
+            order = event.message.text.split(" ",1)
+            #利用dict KEY值為id
+            order_list[event.source.user_id] = order[1]
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(order_list)))
+            #飲料名稱 order[0]
+         
+             #甜度order[1]
+         
+            #冰量order[2]
+         
+            #姓名order[3]
+        else : 
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="尚未開團"))
+    elif event.message.text == '結單' :
+        isCreateOrder == False
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='結單'))
 
-        order = event.message.text.split(" ",1)
-        #利用dict KEY值為id 
-        order_list[event.source.user_id] = order[1]
-        line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=str(order_list)))
-         #飲料名稱 order[0]
-         
-         #甜度order[1]
-         
-         #冰量order[2]
-         
-         #姓名order[3]
     elif event.message.text == '指令':
         line_bot_api.reply_message(
         event.reply_token,
