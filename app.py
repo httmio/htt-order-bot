@@ -26,7 +26,6 @@ def shopMeum(shop):
         return shop
 
 app = Flask(__name__)
-isCreateOrder = False
 line_bot_api = LineBotApi('0o5l0pRHo2gX+SpR7BJ4f65rQc6ryImkYZY1Dr0WuWP6uZvGb+Djww4NrBRCd5LOi0/b2LJY+8D6UY5lirRqZZY2I2fqJ0dE/MBCI3a4S9qCptHt8GSS2VZntY4mPFc6/RxviTlG0nwzRcnQn/z2XwdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('d01e5f80a2981984188e24ee5591587f')
 order_list = dict()
@@ -57,7 +56,7 @@ def handle_message(event):
     print('-----------------'+event.reply_token+'----------------------------')
     print('-----------------'+event.message.text+'---------------------------')
     print('-----------------'+event.source.user_id+'---------------------------')
-    
+    isCreateOrder = False
     if  hasattr(event.source, 'user_id') == True and hasattr(event.source, 'group_id') == True:
         profile = line_bot_api.get_group_member_profile(event.source.group_id,event.source.user_id)
         print('-----------------'+profile.display_name+'---------------------------')
