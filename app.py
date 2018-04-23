@@ -29,7 +29,7 @@ app = Flask(__name__)
 isCreateOrder = False
 line_bot_api = LineBotApi('0o5l0pRHo2gX+SpR7BJ4f65rQc6ryImkYZY1Dr0WuWP6uZvGb+Djww4NrBRCd5LOi0/b2LJY+8D6UY5lirRqZZY2I2fqJ0dE/MBCI3a4S9qCptHt8GSS2VZntY4mPFc6/RxviTlG0nwzRcnQn/z2XwdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('d01e5f80a2981984188e24ee5591587f')
-
+order_list = dict()
 
 @app.route('/')
 def index():
@@ -75,7 +75,7 @@ def handle_message(event):
             img = shopMeum(shop[1])
             isCreateOrder = True
             line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
-   elif event.message.text.find('訂') != -1:
+    elif event.message.text.find('訂') != -1:
 
         order = event.message.text.split(" ",1)
         #利用dict KEY值為id 
