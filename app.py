@@ -99,7 +99,10 @@ def handle_message(event):
             else :
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="你尚未訂購"))
     elif event.message.text == '查詢' :
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(order_list)))
+        if order_list.has_key(event.source.user_id) == True :
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=order_list.get(event.source.user_id)))
+        else :           
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查無訂購資料"))
     elif event.message.text == '結單' :
         isCreateOrder == False
         order_list.clear()
