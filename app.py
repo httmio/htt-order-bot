@@ -58,9 +58,6 @@ def handle_message(event):
     print('-----------------'+event.message.text+'---------------------------')
     print('-----------------'+event.source.user_id+'---------------------------')
     isCreateOrder = False
-    if event == JoinEvent:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text="嗨"))
-
     if  hasattr(event.source, 'user_id') == True and hasattr(event.source, 'group_id') == True:
         profile = line_bot_api.get_group_member_profile(event.source.group_id,event.source.user_id)
         print('-----------------'+profile.display_name+'---------------------------')
