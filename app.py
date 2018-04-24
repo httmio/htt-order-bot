@@ -91,6 +91,14 @@ def handle_message(event):
             #姓名order[3]
         else : 
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="尚未開團"))
+    elif event.message.text == '刪除' :
+        if isCreateOrder ==True :
+            if event.source.user_id in order_list:
+                del order_list[event.source.user_id]
+            else :
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="你尚未訂購"))
+    elif event.message.text == '查詢' :
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(order_list)))
     elif event.message.text == '結單' :
         isCreateOrder == False
         order_list.clear()
