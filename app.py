@@ -84,9 +84,6 @@ def handle_message(event):
         else:line_bot_api.reply_message(event.reply_token,TextSendMessage(text='已開團'))
     elif event.message.text.find('訂') != -1:
         if isCreateOrder == True:
-            order = event.message.text.split(" ",1)
-            #利用dict KEY值為id
-            order_list[event.source.user_id] = order[1]
             check =  event.message.text.split()
             if len(check) == 5 :
                 #飲料名稱 check[1]
@@ -103,6 +100,9 @@ def handle_message(event):
             else :    
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="訂購失敗"))
                 break
+            order = event.message.text.split(" ",1)
+            #利用dict KEY值為id
+            order_list[event.source.user_id] = order[1]
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(order_list)))
         else : 
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="尚未開團"))
