@@ -30,8 +30,8 @@ line_bot_api = LineBotApi('0o5l0pRHo2gX+SpR7BJ4f65rQc6ryImkYZY1Dr0WuWP6uZvGb+Djw
 handler = WebhookHandler('d01e5f80a2981984188e24ee5591587f')
 order_list = dict()
 group = ""
+global isCreateOrder
 isCreateOrder = False
-
 @app.route('/')
 def index():
     return "<p>Hello World!</p>"
@@ -39,8 +39,7 @@ def index():
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
-
-    # get request body as text
+ # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
     print("-----------------------------\n"+body)
@@ -49,6 +48,7 @@ def callback():
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
+   
 
     return 'OK'
 
@@ -59,9 +59,9 @@ def handle_join(event):
         event.reply_token,
         TextSendMessage(text='輸入 開團 店名 (例如: 開團 50嵐) 進行開團 \n 訂購者請依照下面格式來訂購 訂 品名 甜度 冰塊 姓名 (例如:訂 紅茶 半糖 少冰 Paul)，如需修改請依照原本格式重新訂購，如需刪除請輸入刪除，如須查詢請輸入查詢'))
 
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    global isCreateOrder
     print('-----------------'+event.reply_token+'----------------------------')
     print('-----------------'+event.message.text+'---------------------------')
     print('-----------------'+event.source.user_id+'---------------------------')
@@ -78,10 +78,11 @@ def handle_message(event):
     elif event.message.text.find('開團') != -1:
         if isCreateOrder == False:
             shop = event.message.text.split()
-            if shop[0] == '開團' :
-                img = shopMeum(shop[1])
-                isCreateOrder = True
-                line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
+            if len(shop) == 2:
+                if shop[0] == '開團' :
+                    img = shopMeum(shop[1])
+                    isCreateOrder = True
+                    line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
         else:
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text='已開團'))
     elif event.message.text.find('訂') != -1:
@@ -89,23 +90,21 @@ def handle_message(event):
             check = event.message.text.split()
             if len(check) == 5 :
                 #飲料名稱 check[1]
-
                 #甜度check[2] 全半少微無
                 if check[2].find('糖') == -1:
                     line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請輸入甜度"))
-                    break
                 #冰量check[3]
-                if check[3].find('冰') == -1 and check[3].find('熱') == -1 and check[3].find('溫') == -1 :
+                elif check[3].find('冰') == -1 and check[3].find('熱') == -1 and check[3].find('溫') == -1 :
                     line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請輸入冰量"))
-                    break
-                #姓名check[4]
+                    #姓名check[4]
+                else :   
+                    order = event.message.text.split(" ",1)
+                    #利用dict KEY值為id
+                    order_list[event.source.user_id] = order[1]
+                    line_bot_api.reply_message(event.reply_token,TextSendMessage(text='訂購成功'))
             else :    
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="訂購失敗"))
-                break
-            order = event.message.text.split(" ",1)
-            #利用dict KEY值為id
-            order_list[event.source.user_id] = order[1]
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(order_list)))
+         
         else : 
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="尚未開團"))
     elif event.message.text == '刪除' :
@@ -115,15 +114,15 @@ def handle_message(event):
             else :
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="你尚未訂購"))
     elif event.message.text == '查詢' :
-        if order_list.has_key(event.source.user_id) == True :
+        if event.source.user_id in order_list:
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text=order_list.get(event.source.user_id)))
         else :           
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查無訂購資料"))
     elif event.message.text == '結單' :
-        isCreateOrder == False
+        isCreateOrder = False
+        result = order_list.values()
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=result))
         order_list.clear()
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='結單'))
-
     elif event.message.text == '指令':
         line_bot_api.reply_message(
         event.reply_token,
