@@ -30,6 +30,8 @@ line_bot_api = LineBotApi('0o5l0pRHo2gX+SpR7BJ4f65rQc6ryImkYZY1Dr0WuWP6uZvGb+Djw
 handler = WebhookHandler('d01e5f80a2981984188e24ee5591587f')
 order_list = dict()
 group = ""
+isCreateOrder = False
+
 @app.route('/')
 def index():
     return "<p>Hello World!</p>"
@@ -63,7 +65,6 @@ def handle_message(event):
     print('-----------------'+event.reply_token+'----------------------------')
     print('-----------------'+event.message.text+'---------------------------')
     print('-----------------'+event.source.user_id+'---------------------------')
-    isCreateOrder = False
     if  hasattr(event.source, 'user_id') == True and hasattr(event.source, 'group_id') == True:
         profile = line_bot_api.get_group_member_profile(event.source.group_id,event.source.user_id)
         print('-----------------'+profile.display_name+'---------------------------')
@@ -81,10 +82,11 @@ def handle_message(event):
                 img = shopMeum(shop[1])
                 isCreateOrder = True
                 line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url=img,preview_image_url=img)) 
-        else:line_bot_api.reply_message(event.reply_token,TextSendMessage(text='已開團'))
+        else:
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text='已開團'))
     elif event.message.text.find('訂') != -1:
         if isCreateOrder == True:
-            check =  event.message.text.split()
+            check = event.message.text.split()
             if len(check) == 5 :
                 #飲料名稱 check[1]
 
