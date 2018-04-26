@@ -29,7 +29,7 @@ app = Flask(__name__)
 line_bot_api = LineBotApi('0o5l0pRHo2gX+SpR7BJ4f65rQc6ryImkYZY1Dr0WuWP6uZvGb+Djww4NrBRCd5LOi0/b2LJY+8D6UY5lirRqZZY2I2fqJ0dE/MBCI3a4S9qCptHt8GSS2VZntY4mPFc6/RxviTlG0nwzRcnQn/z2XwdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('d01e5f80a2981984188e24ee5591587f')
 order_list = dict()
-
+group = ""
 @app.route('/')
 def index():
     return "<p>Hello World!</p>"
@@ -52,9 +52,10 @@ def callback():
 
 @handler.add(JoinEvent)
 def handle_join(event):
+    group = event.source.groupId
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text='Joined this ' + event.source.type))
+        TextSendMessage(text='輸入 開團 店名 (例如: 開團 50嵐) 進行開團 \n 訂購者請依照下面格式來訂購 訂 品名 甜度 冰塊 姓名 (例如:訂 紅茶 半糖 少冰 Paul)，如需修改請依照原本格式重新訂購，如需刪除請輸入刪除，如須查詢請輸入查詢'))
 
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -69,7 +70,6 @@ def handle_message(event):
     elif  hasattr(event.source, 'user_id') == True:
           profile = line_bot_api.get_profile(event.source.user_id)
           print('-----------------'+profile.display_name+'---------------------------')
-
     if  event.message.text == '雷姆':
         line_bot_api.reply_message(
         event.reply_token,
@@ -87,14 +87,23 @@ def handle_message(event):
             order = event.message.text.split(" ",1)
             #利用dict KEY值為id
             order_list[event.source.user_id] = order[1]
+            check =  event.message.text.split()
+            if len(check) == 5 :
+                #飲料名稱 check[1]
+
+                #甜度check[2] 全半少微無
+                if check[2].find('糖') == -1:
+                    line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請輸入甜度"))
+                    break
+                #冰量check[3]
+                if check[3].find('冰') == -1 and check[3].find('熱') == -1 and check[3].find('溫') == -1 :
+                    line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請輸入冰量"))
+                    break
+                #姓名check[4]
+            else :    
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="訂購失敗"))
+                break
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(order_list)))
-            #飲料名稱 order[0]
-         
-             #甜度order[1]
-         
-            #冰量order[2]
-         
-            #姓名order[3]
         else : 
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="尚未開團"))
     elif event.message.text == '刪除' :
@@ -116,7 +125,7 @@ def handle_message(event):
     elif event.message.text == '指令':
         line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text="目前可以執行指令\n抽籤、吃什麼、抽早安圖、雷姆"))
+        TextSendMessage(text="目前可以執行指令\n開團 訂、刪除、查詢、結單"))
     else:
         pass
 if __name__ == "__main__":
