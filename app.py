@@ -29,6 +29,7 @@ app = Flask(__name__)
 line_bot_api = LineBotApi('0o5l0pRHo2gX+SpR7BJ4f65rQc6ryImkYZY1Dr0WuWP6uZvGb+Djww4NrBRCd5LOi0/b2LJY+8D6UY5lirRqZZY2I2fqJ0dE/MBCI3a4S9qCptHt8GSS2VZntY4mPFc6/RxviTlG0nwzRcnQn/z2XwdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('d01e5f80a2981984188e24ee5591587f')
 order_list = dict()
+global group
 group = ""
 global isCreateOrder
 isCreateOrder = False
@@ -54,15 +55,16 @@ def callback():
 
 @handler.add(JoinEvent)
 def handle_join(event):
-    group = event.source.groupId
+    if  hasattr(event.source, 'user_id') == True:
+        global group
+        group = event.source.group_id
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text='輸入 開團 店名 (例如: 開團 50嵐) 進行開團 \n 訂購者請依照下面格式來訂購 訂 品名 甜度 冰塊 姓名 (例如:訂 紅茶 半糖 少冰 Paul)，如需修改請依照原本格式重新訂購，如需刪除請輸入刪除，如須查詢請輸入查詢'))
+        TextSendMessage(text='輸入 開團 店名 (例如: 開團 50嵐) 進行開團\n訂購者請依照下面格式來訂購\n訂 品名 甜度 冰塊 姓名 (例如:訂 紅茶 半糖 少冰 Paul)，如需修改請依照原本格式重新訂購，如需刪除請輸入刪除，如須查詢請輸入查詢'))
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global isCreateOrder
-    print('-----------------'+event.reply_token+'----------------------------')
     print('-----------------'+event.message.text+'---------------------------')
     print('-----------------'+event.source.user_id+'---------------------------')
     if  hasattr(event.source, 'user_id') == True and hasattr(event.source, 'group_id') == True:
@@ -75,6 +77,8 @@ def handle_message(event):
         line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text='雷姆是一位有著水藍色頭髮、水藍色瞳孔的少女，有著與雙胞胎姊姊拉姆相似的外型，右眼以瀏海掩蓋，只露出左眼，與姐姐拉姆相反；胸部則比拉姆大一點'))
+        if hasattr(event.source, 'group_id') == True:
+            line_bot_api.push_message(event.source.group_id,TextSendMessage(text='雷姆大好!!'))
     elif event.message.text.find('開團') != -1:
         if isCreateOrder == False:
             shop = event.message.text.split()
